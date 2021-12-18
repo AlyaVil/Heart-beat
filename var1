@@ -60,3 +60,50 @@ void createHeart(int heartSize, int depthAmount, int spacing) {
     }
   }
 }
+
+void setup() {
+  size(640, 640, P3D);
+  noFill();
+  rectMode(CENTER);
+
+  explosionPos = new PVector(0, 0, 0);
+
+  createHeart(6, 15, 10);
+}
+
+
+void draw() {
+  background(30);
+
+  for (Particle particle : allParticles) {
+    if (particle.active) {
+      // Particle is dynamic
+      particle.vel.add(gravity);
+
+      if (particle.pos.x == width/2) { 
+        // This is just so there aren't any particles going straight down the middle
+        particle.vel.x += random(-0.15, 0.15);
+      }
+
+      particle.pos.add(particle.vel);
+    } else {
+      // Particle is passive and should keep pulsating
+      PVector dir = new PVector(-width/2, -height/2, 0);
+      dir.add(particle.pos);
+      dir.normalize();
+      dir.mult(pulsateMult*particle.zDepth*0.05+cos(frameCount*0.05)*1.5);
+      particle.pos.add(dir);
+    }
+
+    particle.draw();
+  }
+
+  pulsateMult = sin(frameCount*0.05)*1.5;
+
+  // Display text
+  stroke(255);
+  textAlign(CENTER);
+  textSize(10);
+  text("Left-click to break my heart </3 then right-click to mend it <3", width/2, height-30, -10);
+}
+
