@@ -107,3 +107,39 @@ void draw() {
   text("Left-click to break my heart </3 then right-click to mend it <3", width/2, height-30, -10);
 }
 
+
+void mousePressed() {
+  // Explode heart
+  if (mouseButton == LEFT) {
+    explosionPos.x = -mouseX;
+    explosionPos.y = -mouseY;
+
+    for (Particle particle : allParticles) {
+      if (particle.active) {
+        continue;
+      }
+
+      PVector dir = new PVector(particle.pos.x, particle.pos.y, particle.pos.z);
+      dir.add(explosionPos);
+      dir.normalize();
+      dir.mult(particle.explosionMult);
+      particle.vel.add(dir);
+      particle.active = true;
+    }
+  } else if (mouseButton == RIGHT) {
+    createHeart(6, 15, 10);
+  }
+}
+
+
+void keyPressed() {
+  if (keyCode == 38) {
+    // Up arrow to increate points
+    angleSteps = max(1.0, angleSteps-0.5);
+    createHeart(6, 15, 10);
+  } else if (keyCode == 40) {
+    // Down arrow to decrease points
+    angleSteps = min(5.0, angleSteps+0.5);
+    createHeart(6, 15, 10);
+  }
+}
